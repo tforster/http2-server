@@ -1,8 +1,12 @@
+"use strict";
+
 (async () => {
-  const HTTP2Server = require("../src");
-  const options = {
-    root: "test",
-  };
+  const HTTP2Server = require("../src/HTTP2Server");
+  const options = {};
+
   const httpServer = await new HTTP2Server(options);
-  httpServer.listen();
+
+  httpServer.listen().catch((reason) => {
+    console.error(reason);
+  });
 })();

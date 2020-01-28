@@ -1,137 +1,34 @@
 "use strict";
 
-// System dependencies (Built in modules)
-const fs = require("fs").promises;
-const http2 = require("http2");
-const path = require("path");
-
 /**
- * A lightweight, dependency free, wrapper around Node's HTTP2 module. Supports extensionless .html files similar to AWS Amplify
- * @class HTTP2Server
+ * Simple CLI argument processor
+ *
+ * --port: "3701" // TCP port to listen on
+ * --root: "/src" // Path to directory on filesystem to serve
+ * --cert: "/src" // Path to directory containing cert files named localhost-privkey.pem and localhost-cert.pem
+ *
+ * @returns {object}: Hash of options
  */
-class HTTP2Server {
-  /**
-   *Creates an instance of HTTP2Server.
-   * @param {object} options: Basic options to override defaults
-   * @memberof HTTP2Server
-   */
-  constructor(options) {
-    options.index = options.index || "index.html";
-    options.port = options.port || 3701;
-    options.ssl = options.ssl || false;
-    options.root = path.resolve(options.root) || __dirname;
-    this.options = options;
-  }
+function getOptions() {
+  const options = {};
 
-  /**
-   * Returns a mimetype for the supplied file extension
-   * ToDo: Allow the internal settings to be overridden by a JSON doc referenced in the initial arguments
-   * @param {string} extension: The filename extension
-   * @returns {string}:         The associated mimetype
-   * @memberof Http2Server
-   */
-  _mimeType(extension) {
-    const mimeTypes = {
-      ".html": "text/html",
-      ".js": "text/javascript",
-      ".css": "text/css",
-      ".json": "application/json",
-
-      ".png": "image/png",
-      ".jpg": "image/jpg",
-      ".jpeg": "image/jpg",
-      ".gif": "image/gif",
-
-      ".svg": "application/image/svg+xml",
-
-      ".woff": "application/font-woff",
-      ".ttf": "application/font-ttf",
-      ".eot": "application/vnd.ms-fontobject",
-      ".otf": "application/font-otf",
-
-      ".wav": "audio/wav",
-      ".mp4": "video/mp4",
-    };
-    return mimeTypes[extension.toLowerCase()] || "application/octet-stream";
-  }
-
-  /**
-   * Handler to pass to createSecureServer
-   * ToDo: Use fs.readStream, not fs.readFile. Rename to _onStream (https://nodejs.org/api/http2.html#http2_server_side_example)
-   * @param {object} req: HTTP2 Request object
-   * @param {object} res: HTTP2 Response object
-   * @memberof HTTP2Server
-   */
-  _onRequest(req, res) {
-    const _this = this;
-    // Log the request path
-    // ToDo: This should be behind a debug flag
-    console.log(`Req: ${req.url}`);
-    // Get the clean URL
-    const url = req.url.split("?")[0];
-    // Get the file path and name or set to index if requesting the root
-    const file = url !== "/" ? url : _this.options.index;
-    // Get the lowercase extension from the file name
-    let extension = String(path.extname(file)).toLowerCase();
-    // Create the full path to the file
-    let filePath = path.join(_this.options.root, file);
-
-    // If there is no extension, cast to .html, similar to AWS Amplify
-    if (extension === "") {
-      filePath = filePath + ".html";
-      extension = ".html";
+  //
+  const args = process.argv.slice(2);
+  args.map((arg, i) => {
+    if (arg.indexOf("--") === 0 && i < args.length && args[i + 1].indexOf("--") !== 0) {
+      options[arg.slice(2)] = args[i + 1];
     }
+  });
 
-    // Stat the file path to confirm we have a real file
-    fs.stat(filePath)
-      .then((stat) => {
-        if (stat.isFile()) {
-          const type = _this._mimeType(extension);
-
-          // Read and serve the file
-          fs.readFile(filePath)
-            .then((content) => {
-              res.writeHead(200, { "Content-Type": type });
-              return res.end(content, "utf-8");
-            })
-            .catch((reason) => {
-              res.writeHead(reason.code === "ENOENT" ? 404 : 500);
-              return res.end("Error reading file from filesystem: " + reason.code);
-            });
-        } else {
-          console.error(404);
-        }
-      })
-      .catch((reason) => {
-        console.error(reason);
-        res.writeHead(404);
-        return res.end(`${filePath} not found`);
-      });
-  }
-
-  /**
-   * Our wrapper around HTTP2Server .listen() with a little sugar
-   * @memberof HTTP2Server
-   */
-  async listen() {
-    // ! Generate key pair using src/create-certs.sh
-    const [key, cert] = await Promise.all([
-      fs.readFile(path.join(__dirname, "localhost-privkey.pem")),
-      fs.readFile(path.join(__dirname, "localhost-cert.pem")),
-    ]);
-
-    // Create an instance
-    const server = http2.createSecureServer(
-      {
-        key,
-        cert,
-      },
-      this._onRequest.bind(this)
-    );
-    // Invoke the listener on the port
-    console.log(`HTTP2 Server is listening on ${this.options.port} for requests for ${this.options.root}`);
-    server.listen(this.options.port);
-  }
+  return options;
 }
 
-module.exports = HTTP2Server;
+(async () => {
+  const HTTP2Server = require("./HTTP2Server");
+
+  const httpServer = await new HTTP2Server(getOptions());
+
+  httpServer.listen().catch((reason) => {
+    console.error(reason);
+  });
+})();
