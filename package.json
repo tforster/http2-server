@@ -1,0 +1,32 @@
+{
+  "name": "http2-server",
+  "version": "0.0.0",
+  "description": "A simple, zero dependency, NodeJS HTTP2 server suitable for development projects.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@ssh.dev.azure.com:v3/geekhacks/HTTP2%20Server/http2-server"
+  },
+  "keywords": [
+    "http",
+    "static",
+    "http2",
+    "http2",
+    "server",
+    "development",
+    "amplify"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-html": "^6.0.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "^1.19.1"
+  }
+}
