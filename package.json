@@ -3,12 +3,15 @@
   "version": "0.0.0",
   "description": "A simple, zero dependency, NodeJS HTTP2 server suitable for development projects.",
   "main": "src/index.js",
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "directories": {
+    "test": "test"
+  },
   "scripts": {
     "test": "test/index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@ssh.dev.azure.com:v3/geekhacks/HTTP2%20Server/http2-server"
   },
   "keywords": [
     "http",
@@ -19,7 +22,7 @@
     "development",
     "amplify"
   ],
-  "author": "",
+  "author": "Troy Forster <troy.forster@gmail.com> (https://www.tforster.com)",
   "license": "ISC",
   "devDependencies": {
     "babel-eslint": "^10.0.3",
@@ -28,5 +31,14 @@
     "eslint-plugin-html": "^6.0.0",
     "eslint-plugin-prettier": "^3.1.2",
     "prettier": "^1.19.1"
-  }
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tforster/http2-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tforster/http2-server/issues"
+  },
+  "homepage": "https://github.com/tforster/http2-server#readme"
 }
