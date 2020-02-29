@@ -2,7 +2,7 @@
 .vscode
 .env
 .serverless
-.pem
+*.pem
 
 ### Misc. Tooling ###
 
