@@ -1,9 +1,10 @@
 {
   "name": "http2-server",
-  "version": "0.0.0",
-  "description": "A simple, zero dependency, NodeJS HTTP2 server suitable for development projects.",
+  "version": "0.1.1",
+  "description": "A simple, zero dependency, Node.js HTTP2 server suitable for development projects.",
   "main": "src/index.js",
   "scripts": {
+    "create-certs": "sh src/create-certs.sh ./src/",
     "test": "test/index.js"
   },
   "repository": {
@@ -13,7 +14,6 @@
   "keywords": [
     "http",
     "static",
-    "http2",
     "http2",
     "server",
     "development",

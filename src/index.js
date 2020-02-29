@@ -42,7 +42,7 @@ class HTTP2Server {
       ".jpeg": "image/jpg",
       ".gif": "image/gif",
 
-      ".svg": "application/image/svg+xml",
+      ".svg": "image/svg+xml",
 
       ".woff": "application/font-woff",
       ".ttf": "application/font-ttf",

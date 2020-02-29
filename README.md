@@ -1,14 +1,17 @@
 # HTTP2 Server
 
-A simple, zero dependency, NodeJS HTTP2 server suitable for development projects.
+A simple, zero dependency, Node.js HTTP2 server suitable for development projects.
 
-HTTP2 Server uses Node's HTTP2 module to securely serve files from the local filesystem. Requests for files with no extension are first checked against the filesystem of the same name with a .html extension. In this way HTTP2 Server can support extensionless html files much the same way that AWS Amplify does. Making HTTP2 Server a great choice for developing for AWS Amplify.
+HTTP2 Server uses Node's HTTP2 module to securely serve files from the local filesystem.
+Requests for files with no extension are first checked against the filesystem of the same name with a `.html` extension.
+In this way HTTP2 Server can support extensionless HTML files much the same way that AWS Amplify does, making HTTP2 Server a great choice for developing for AWS Amplify.
 
 ## Installation
 
 1. Add HTTP2 Server as a developer dependency in your current web project with `npm i @tforster/http2-server -D`.
-2. Create a self-signed certificate alongside the index.js file. Navigate to subdirectory below node_modules containing the create-certs.sh file. In that directory run `sh create-certs.sh`. Note that the next version of HTTP2Server will support command line arguments to specify the location of the certificate files.
-3. `npx http2-server`
+2. Create a self-signed certificate in the project root with `sh node_modules/http2-server/src/create-certs.sh`.
+   Note that the next version will support command line arguments to specify the certificate file locations.
+3. Start the server with `npx http2-server`.
 
 ## Built With
 
@@ -33,4 +36,6 @@ Based on code originally developed by @webdivelement
 
 ## Change Log
 
-v0.0.0 **Initial creation** (2020-01-28)
+v0.1.1 **Updated MIME Types and Certificate Paths** (2020-02-29)
+
+v0.1.0 **Initial Creation** (2020-01-28)
