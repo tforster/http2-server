@@ -2,6 +2,7 @@
 
 // System dependencies (Built in modules)
 const fs = require("fs").promises;
+const { createReadStream } = require("fs");
 const http2 = require("http2");
 const path = require("path");
 
@@ -19,7 +20,7 @@ class HTTP2Server {
     options.index = options.index || "index.html";
     options.port = options.port || 3701;
     options.root = options.root ? path.resolve(options.root) : process.cwd();
-    // ToDo: Yeah, probably not a good idea putting cert files in the server root
+    // ToDo: Yeah, probably not a good idea putting cert files in the server root. But you're just using this for local development right?
     options.cert = options.cert ? path.resolve(options.cert) : options.root;
     this.options = options;
   }
@@ -57,7 +58,7 @@ class HTTP2Server {
 
   /**
    * Handler to pass to createSecureServer
-   * ToDo: Use fs.readStream, not fs.readFile. Rename to _onStream (https://nodejs.org/api/http2.html#http2_server_side_example)
+   *
    * @param {object} req: HTTP2 Request object
    * @param {object} res: HTTP2 Response object
    * @memberof HTTP2Server
@@ -88,16 +89,13 @@ class HTTP2Server {
         if (stat.isFile()) {
           const type = _this._mimeType(extension);
 
-          // Read and serve the file
-          fs.readFile(filePath)
-            .then((content) => {
-              res.writeHead(200, { "Content-Type": type });
-              return res.end(content, "utf-8");
-            })
-            .catch((reason) => {
-              res.writeHead(reason.code === "ENOENT" ? 404 : 500);
-              return res.end("Error reading file from filesystem: " + reason.code);
-            });
+          const readStream = createReadStream(filePath);
+          readStream.on("close", () => {
+            res.end(null, "utf-8");
+          });
+
+          res.writeHead(200, { "Content-Type": type });
+          readStream.pipe(res);
         } else {
           console.error(404);
         }
@@ -114,19 +112,19 @@ class HTTP2Server {
    * @memberof HTTP2Server
    */
   async listen() {
-    // ! Generate key pair using src/create-certs.sh
+    // ! Don't forget to generate a key pair using src/create-certs.sh
     const [key, cert] = await Promise.all([
       fs.readFile(path.join(this.options.cert, "localhost-privkey.pem")),
       fs.readFile(path.join(this.options.cert, "localhost-cert.pem")),
     ]).catch((reason) => {
       if (reason.code === "ENOENT") {
-        throw "Missing certificate file(s). Try running sh create-certs.sh in the src directory and/or specifiying the --cert command line argument.";
+        throw "Missing certificate file(s). Try running 'npm run create-certs' or specifying their location with the --cert argument.";
       } else {
         throw reason;
       }
     });
 
-    // Create an instance
+    //Create an instance
     const server = http2.createSecureServer(
       {
         key,
