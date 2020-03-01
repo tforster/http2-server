@@ -20,40 +20,54 @@ class HTTP2Server {
     options.index = options.index || "index.html";
     options.port = options.port || 3701;
     options.root = options.root ? path.resolve(options.root) : process.cwd();
-    // ToDo: Yeah, probably not a good idea putting cert files in the server root. But you're just using this for local development right?
     options.cert = options.cert ? path.resolve(options.cert) : options.root;
     this.options = options;
+
+    // Get list of mimeTypes including any additions passed in the --mime CLI arg
+    const mimeAdditions = options.mime ? JSON.parse(options.mime) : null;
+    this.mimeTypes = this._getMimeTypes(mimeAdditions);
+  }
+
+  /**
+   * Returns a list of mimeTypes. Can be augmented by passing additional types in --mime CLI arg
+   * @param {*} [mimeAdditions={}]: An optional hash of extension/mime pairs in the format { ".extension": "mime/type" }
+   * @returns:                      A hash of mime types by extension
+   * @memberof HTTP2Server
+   */
+  _getMimeTypes(mimeAdditions = {}) {
+    return {
+      ...{
+        ".html": "text/html",
+        ".js": "text/javascript",
+        ".css": "text/css",
+        ".json": "application/json",
+
+        ".png": "image/png",
+        ".jpg": "image/jpg",
+        ".jpeg": "image/jpg",
+        ".gif": "image/gif",
+        ".svg": "image/svg+xml",
+
+        ".woff": "application/font-woff",
+        ".ttf": "application/font-ttf",
+        ".eot": "application/vnd.ms-fontobject",
+        ".otf": "application/font-otf",
+
+        ".wav": "audio/wav",
+        ".mp4": "video/mp4",
+      },
+      ...mimeAdditions,
+    };
   }
 
   /**
    * Returns a mimetype for the supplied file extension
-   * ToDo: Allow the internal settings to be overridden by a JSON doc referenced in the initial arguments
    * @param {string} extension: The filename extension
    * @returns {string}:         The associated mimetype
    * @memberof Http2Server
    */
   _mimeType(extension) {
-    const mimeTypes = {
-      ".html": "text/html",
-      ".js": "text/javascript",
-      ".css": "text/css",
-      ".json": "application/json",
-
-      ".png": "image/png",
-      ".jpg": "image/jpg",
-      ".jpeg": "image/jpg",
-      ".gif": "image/gif",
-      ".svg": "image/svg+xml",
-
-      ".woff": "application/font-woff",
-      ".ttf": "application/font-ttf",
-      ".eot": "application/vnd.ms-fontobject",
-      ".otf": "application/font-otf",
-
-      ".wav": "audio/wav",
-      ".mp4": "video/mp4",
-    };
-    return mimeTypes[extension.toLowerCase()] || "application/octet-stream";
+    return this.mimeTypes[extension.toLowerCase()] || "application/octet-stream";
   }
 
   /**
@@ -63,11 +77,12 @@ class HTTP2Server {
    * @param {object} res: HTTP2 Response object
    * @memberof HTTP2Server
    */
-  _onRequest(req, res) {
+  async _onRequest(req, res) {
     const _this = this;
-    // Log the request path
-    // ToDo: This should be behind a debug flag
-    console.log(`Req: ${req.url}`);
+    // Log the request path. HTTP2Server is intended for development use only so we can assume verbose logging is acceptable.
+    console.log(`\nReq: ${req.url}`);
+    // Set a default statusCode
+    let statusCode = 200;
     // Get the clean URL
     const url = req.url.split("?")[0];
     // Get the file path and name or set to index if requesting the root
@@ -83,28 +98,42 @@ class HTTP2Server {
       extension = ".html";
     }
 
-    // Stat the file path to confirm we have a real file
-    fs.stat(filePath)
-      .then((stat) => {
-        if (stat.isFile()) {
-          const type = _this._mimeType(extension);
+    try {
+      const stat = await fs.stat(filePath);
+      if (stat.isFile()) {
+        // We have a legit file
+        const type = _this._mimeType(extension);
 
-          const readStream = createReadStream(filePath);
-          readStream.on("close", () => {
-            res.end(null, "utf-8");
-          });
+        const readStream = createReadStream(filePath);
 
-          res.writeHead(200, { "Content-Type": type });
-          readStream.pipe(res);
-        } else {
-          console.error(404);
-        }
-      })
-      .catch((reason) => {
-        console.error(reason);
-        res.writeHead(404);
-        return res.end(`${filePath} not found`);
-      });
+        // End the response stream when the incoming file stream ends
+        readStream.on("close", () => {
+          res.end(null, "utf-8");
+        });
+
+        // Send a 200 header
+        res.writeHead(statusCode, { "Content-Type": type });
+
+        // Pipe the file to the response
+        readStream.pipe(res);
+
+        console.log(`${statusCode}: ${filePath}`);
+      } else {
+        // Should not hit this condition since we cast everything to a file at line ~79. Should see 404 instead.
+      }
+    } catch (err) {
+      // ToDo: Add more specific errors on a case-by-case basis
+      if (err.code && err.code === "ENOENT") {
+        // 404
+        statusCode = 404;
+      } else {
+        // Default to 500
+        statusCode = 500;
+      }
+      console.error(`${statusCode}: ${filePath}. ${err.message}`);
+      res.writeHead(statusCode);
+      res.end();
+    }
   }
 
   /**
@@ -112,7 +141,7 @@ class HTTP2Server {
    * @memberof HTTP2Server
    */
   async listen() {
-    // ! Don't forget to generate a key pair using src/create-certs.sh
+    // ! Don't forget to generate a key pair using src/create-certs.sh or npm run create-certs
     const [key, cert] = await Promise.all([
       fs.readFile(path.join(this.options.cert, "localhost-privkey.pem")),
       fs.readFile(path.join(this.options.cert, "localhost-cert.pem")),

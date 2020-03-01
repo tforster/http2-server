@@ -6,6 +6,7 @@
  * --port: "3701" // TCP port to listen on
  * --root: "/src" // Path to directory on filesystem to serve
  * --cert: "/src" // Path to directory containing cert files named localhost-privkey.pem and localhost-cert.pem
+ * --mime: "{".html":"text/plain"}"
  *
  * @returns {object}: Hash of options
  */
