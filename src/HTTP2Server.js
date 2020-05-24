@@ -94,6 +94,11 @@ class HTTP2Server {
 
     // If there is no extension, cast to .html, similar to AWS Amplify
     if (extension === "") {
+      // If the last character is a forward slash, add the index to the path
+      // ex: https://localhost/example/  ->  /example/index.html
+      if (filePath.slice(-1) === "/") {
+        filePath += "index";
+      }
       filePath = filePath + ".html";
       extension = ".html";
     }
