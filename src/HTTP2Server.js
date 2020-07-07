@@ -17,7 +17,9 @@ class HTTP2Server {
    * @memberof HTTP2Server
    */
   constructor(options = {}) {
-    options.index = options.index || "index.html";
+    // Only add the .html extension when specified
+    let index = "index" + (options.extensions ? ".html" : "");
+    options.index = options.index || index;
     options.port = options.port || 3701;
     options.root = options.root ? path.resolve(options.root) : process.cwd();
     options.cert = options.cert ? path.resolve(options.cert) : options.root;
@@ -95,11 +97,16 @@ class HTTP2Server {
     // If there is no extension, cast to .html, similar to AWS Amplify
     if (extension === "") {
       // If the last character is a forward slash, add the index to the path
-      // ex: https://localhost/example/  ->  /example/index.html
+      // ex: https://localhost/example/  ->  /example/index
       if (filePath.slice(-1) === "/") {
         filePath += "index";
       }
-      filePath = filePath + ".html";
+      // Only add the .html extension when specified
+      // ex: https://localhost/example/  ->  /example/index.html
+      if (this.options.extensions) {
+        filePath = filePath + ".html";
+      }
+      // Always default to HTML as the default for extensionless
       extension = ".html";
     }
 
