@@ -1,28 +1,33 @@
 {
   "name": "http2-server",
-  "version": "0.0.0",
-  "description": "A simple, zero dependency, NodeJS HTTP2 server suitable for development projects.",
-  "main": "src/index.js",
-  "scripts": {
-    "test": "test/index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@ssh.dev.azure.com:v3/geekhacks/HTTP2%20Server/http2-server"
-  },
+  "version": "0.1.5",
+  "description": "A simple, zero dependency, Node.js HTTP2 server for development projects.",
+  "homepage": "https://github.com/tforster/http2-server#readme",
+  "author": "Troy Forster <troy.forster@gmail.com> (https://www.tforster.com)",
+  "license": "MIT",
   "keywords": [
     "http",
     "static",
-    "http2",
     "http2",
     "server",
     "development",
     "amplify"
   ],
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tforster/http2-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tforster/http2-server/issues"
+  },
+  "main": "src/index.js",
+  "scripts": {
+    "create-certs": "sh src/create-certs.sh ./src/",
+    "bump": "npm version $@ --git-tag-version=false",
+    "test": "test/index.js"
+  },
+  "dependencies": {},
   "devDependencies": {
-    "babel-eslint": "^10.0.3",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-html": "^6.0.0",
