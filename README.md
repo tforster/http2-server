@@ -1,41 +1,76 @@
 # HTTP2 Server
 
-A simple, zero dependency, Node.js HTTP2 server suitable for development projects.
+_A simple, zero dependency, Node.js HTTP2 server for development projects._
 
-HTTP2 Server uses Node's HTTP2 module to securely serve files from the local filesystem.
-Requests for files with no extension are first checked against the filesystem of the same name with a `.html` extension.
-In this way HTTP2 Server can support extensionless HTML files much the same way that AWS Amplify does, making HTTP2 Server a great choice for developing for AWS Amplify.
+HTTP2 Server uses Node's HTTP2 module to securely serve local files.  
+Requests with no extension are optionally checked for with a `.html` extension.
+
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [Change Log](#change-log)
+- [License](#license)
+- [Attribution](#attribution)
+
+## Prerequisites
+
+The versions listed for these prerequisites are current at the time of writing.  
+While more recent versions are likely to work, _your mileage may vary..._
+
+- [Node v14.5 and NPM v6.14](https://nodejs.org/)
 
 ## Installation
 
-1. Add HTTP2 Server as a developer dependency in your current web project with `npm i @tforster/http2-server -D`.
-2. Create a self-signed certificate in the project root with `sh node_modules/http2-server/src/create-certs.sh`.
-   Note that the next version will support command line arguments to specify the certificate file locations.
-3. Start the server with `npx http2-server`.
+1. Add HTTP2 Server as a developer dependency in your current web project:
 
-## Built With
+    ```sh
+    npm install tforster/http2-server --save-dev
+    ```
 
-The following is a list of the technologies used to develop and manage this project.
+2. Create a self-signed certificate in the project root:
 
-| Tool                                                                                                              | Description                                                                                          |
-| ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| [Coffee](https://en.wikipedia.org/wiki/Coffee)                                                                    | A good source of [C8H10N4O2](https://pubchem.ncbi.nlm.nih.gov/compound/caffeine)                     |
-| [Git 2.17.1](https://git-scm.com/)                                                                                | Source Code Management (SCM) client                                                                  |
-| [NodeJS 13.1.0](https://nodejs.org/en/)                                                                           | Task running, automation and driving the API                                                         |
-| [NPM 6.13.6](https://www.npmjs.com/package/npm)                                                                   | Node package management                                                                              |
-| [Oh-My-Zsh](https://github.com/robbyrussell/oh-my-zsh)                                                            | ZSH shell enhancement                                                                                |
-| [Ubuntu 18.04 for WSL2](https://www.microsoft.com/en-ca/p/ubuntu/9nblggh4msv6?activetab=pivot:overviewtab)        | Canonical supported Ubuntu for Windows Subsystem for Linux                                           |
-| [Visual Studio Code 1.41.1](https://code.visualstudio.com/)                                                       | Powerful and cross-platform code editor                                                              |
-| [Windows 10 Pro Insider Preview](https://www.microsoft.com/en-us/software-download/windowsinsiderpreviewadvanced) | The stable version of the Insiders build typically brings new tools of significant use to developers |
-| [WSL 2](https://docs.microsoft.com/en-us/windows/wsl/install-win10)                                               | Windows Subsystem for Linux supports native Linux distributions                                      |
-| [ZSH](https://www.zsh.org/)                                                                                       | A better shell than Bash                                                                             |
+    ```sh
+    sh node_modules/http2-server/scripts/create-certs.sh
+    ```
 
-## Acknowledgements
+## Usage
 
-Based on code originally developed by @webdivelement
+1. Start the local development server:
+
+    ```sh
+    node node_modules/http2-server \
+      --root $DIRECTORY_ROOT \
+      --cert $DIRECTORY_CERT \
+      --port $PORT \
+      --extensions true # set to true to look for files with .html
+    ```
+
+## Contributing
+
+To contribute to this project, please see [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## Change Log
 
-v0.1.1 **Updated MIME Types and Certificate Paths** (2020-02-29)
+All released versions are available as
+[tags on this repository](https://github.com/webdivelement/projicon/tags).  
+To view the release notes for all available versions, please see
+[`CHANGELOG.md`](CHANGELOG.md).
 
-v0.1.0 **Initial Creation** (2020-01-28)
+## License
+
+This project is licensed under the **MIT License**, please see
+[`LICENSE.txt`](LICENSE.txt).
+
+## Attribution
+
+Created by [tforster](https://github.com/tforster).  
+Based on code by [webdivelement](https://github.com/webdivelement).  
+Maintained by [tforster](https://github.com/tforster) and
+[webdivelement](https://github.com/webdivelement).
+
+View the
+[GitHub repository](https://github.com/tforster/http2-server)
+or the
+[list of contributors](https://github.com/tforster/http2-server/contributors)
+for this project.

@@ -1,19 +1,10 @@
 {
   "name": "http2-server",
-  "version": "0.1.1",
-  "description": "A simple, zero dependency, Node.js HTTP2 server suitable for development projects.",
-  "main": "src/index.js",
-  "files": [
-    "src",
-    "README.md"
-  ],
-  "directories": {
-    "test": "test"
-  },
-  "scripts": {
-    "create-certs": "sh src/create-certs.sh ./src/",
-    "test": "test/index.js"
-  },
+  "version": "0.1.5",
+  "description": "A simple, zero dependency, Node.js HTTP2 server for development projects.",
+  "homepage": "https://github.com/tforster/http2-server#readme",
+  "author": "Troy Forster <troy.forster@gmail.com> (https://www.tforster.com)",
+  "license": "MIT",
   "keywords": [
     "http",
     "static",
@@ -22,17 +13,6 @@
     "development",
     "amplify"
   ],
-  "author": "Troy Forster <troy.forster@gmail.com> (https://www.tforster.com)",
-  "license": "ISC",
-  "devDependencies": {
-    "babel-eslint": "^10.0.3",
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.10.0",
-    "eslint-plugin-html": "^6.0.0",
-    "eslint-plugin-prettier": "^3.1.2",
-    "prettier": "^1.19.1"
-  },
-  "dependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tforster/http2-server.git"
@@ -40,5 +20,18 @@
   "bugs": {
     "url": "https://github.com/tforster/http2-server/issues"
   },
-  "homepage": "https://github.com/tforster/http2-server#readme"
+  "main": "src/index.js",
+  "scripts": {
+    "create-certs": "sh src/create-certs.sh ./src/",
+    "bump": "npm version $@ --git-tag-version=false",
+    "test": "test/index.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-html": "^6.0.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "^1.19.1"
+  }
 }

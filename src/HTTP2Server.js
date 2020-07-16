@@ -7,12 +7,13 @@ const http2 = require("http2");
 const path = require("path");
 
 /**
- * A lightweight, dependency free, wrapper around Node's HTTP2 module. Supports extensionless .html files similar to AWS Amplify
+ * A lightweight, dependency free, wrapper around Node's HTTP2 module.
+ * Supports extensionless .html files similar to AWS Amplify.
  * @class HTTP2Server
  */
 class HTTP2Server {
   /**
-   *Creates an instance of HTTP2Server.
+   * Creates an instance of HTTP2Server.
    * @param {object} options: Basic options to override defaults
    * @memberof HTTP2Server
    */
@@ -115,13 +116,10 @@ class HTTP2Server {
       if (stat.isFile()) {
         // We have a legit file
         const type = _this._mimeType(extension);
-
         const readStream = createReadStream(filePath);
 
         // End the response stream when the incoming file stream ends
-        readStream.on("close", () => {
-          res.end(null, "utf-8");
-        });
+        readStream.on("close", () => res.end(null, "utf-8"));
 
         // Send a 200 header
         res.writeHead(statusCode, { "Content-Type": type });
@@ -134,7 +132,7 @@ class HTTP2Server {
         // Should not hit this condition since we cast everything to a file at line ~79. Should see 404 instead.
       }
     } catch (err) {
-      // ToDo: Add more specific errors on a case-by-case basis
+      // TODO: Add more specific errors on a case-by-case basis
       if (err.code && err.code === "ENOENT") {
         // 404
         statusCode = 404;
@@ -165,12 +163,9 @@ class HTTP2Server {
       }
     });
 
-    //Create an instance
+    // Create an instance
     const server = http2.createSecureServer(
-      {
-        key,
-        cert,
-      },
+      { key, cert },
       this._onRequest.bind(this)
     );
     // Invoke the listener on the port
