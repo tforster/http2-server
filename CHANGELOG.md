@@ -8,6 +8,8 @@ All released versions are available as
 
 ## Release Notes
 
+`v0.1.6` **Added Support for Serving XML Files** (2020-08-05)
+
 `v0.1.5` **Added Support for Reading Extensionless HTML Files** (2020-07-07)
 
 `v0.1.4` **Added Support for Trailing Slashes to Load Subdirectories** (2020-05-24)
