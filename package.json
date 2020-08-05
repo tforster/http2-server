@@ -1,6 +1,6 @@
 {
   "name": "http2-server",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "A simple, zero dependency, Node.js HTTP2 server for development projects.",
   "homepage": "https://github.com/tforster/http2-server#readme",
   "author": "Troy Forster <troy.forster@gmail.com> (https://www.tforster.com)",
