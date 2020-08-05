@@ -44,6 +44,7 @@ class HTTP2Server {
         ".js": "text/javascript",
         ".css": "text/css",
         ".json": "application/json",
+        ".xml": "application/xml",
 
         ".png": "image/png",
         ".jpg": "image/jpg",

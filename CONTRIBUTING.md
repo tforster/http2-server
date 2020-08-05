@@ -13,7 +13,7 @@
 
 Before contributing, please first discuss the change(s) you wish to make.  
 You may [create an issue](https://github.com/tforster/http2-server/issues/new)
-or [contact the owner](https://github.com/webdivelement) of this repository.
+or [contact the owner](https://github.com/tforster) of this repository.
 
 ## Code of Conduct
 
@@ -75,7 +75,7 @@ of the repository with your account.
     - Additional noteworthy changes to be mentioned.
     ```
 
-4. Stage the modified / added / removed files which are to be committed.
+4. Stage the modified / added / removed files which are to be committed:
 
     ```sh
     git add --all
